@@ -670,3 +670,9 @@ class BaseDatabaseOperations:
         if options:
             raise ValueError('Unknown options: %s' % ', '.join(sorted(options.keys())))
         return self.explain_prefix
+
+    def insert_statement(self, on_conflict=None):
+        return 'INSERT INTO'
+
+    def on_conflict_postfix(self, on_conflict=None):
+        return ''

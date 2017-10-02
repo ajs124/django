@@ -282,3 +282,9 @@ class DatabaseOperations(BaseDatabaseOperations):
             # EXTENDED and FORMAT are mutually exclusive options.
             prefix += ' EXTENDED'
         return prefix
+
+    def insert_statement(self, on_conflict=None):
+        if on_conflict == 'ignore':
+            return 'INSERT IGNORE INTO'
+
+        return super().insert_statement(on_conflict)

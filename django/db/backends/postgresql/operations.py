@@ -273,3 +273,9 @@ class DatabaseOperations(BaseDatabaseOperations):
         if extra:
             prefix += ' (%s)' % ', '.join('%s %s' % i for i in extra.items())
         return prefix
+
+    def on_conflict_postfix(self, on_conflict=None):
+        if on_conflict == 'ignore':
+            return 'ON CONFLICT DO NOTHING'
+
+        return super().on_conflict_postfix(on_conflict)

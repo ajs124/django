@@ -246,6 +246,9 @@ Models
   plan of a queryset's query.
 
 *  :meth:`.QuerySet.raw` now supports :meth:`~.QuerySet.prefetch_related`.
+* The new ``on_conflict`` parameter of
+  :meth:`~django.db.models.query.QuerySet.bulk_create` controls how the database
+  handles rows that fail constraint checking.
 
 Requests and Responses
 ~~~~~~~~~~~~~~~~~~~~~~

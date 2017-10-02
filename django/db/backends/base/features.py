@@ -257,6 +257,10 @@ class BaseDatabaseFeatures:
     # unknown kwargs are passed to QuerySet.explain()?
     validates_explain_options = True
 
+    # Does the backend support ignoring constraint or uniqueness errors during
+    # inserting?
+    supports_on_conflict_ignore = True
+
     def __init__(self, connection):
         self.connection = connection
 
