@@ -277,8 +277,9 @@ class BulkCreateTests(TestCase):
         ]
         TwoFields.objects.bulk_create(data)
         self.assertEqual(TwoFields.objects.count(), 3)
-        TwoFields.objects.bulk_create(data, on_conflict='ignore')
-        self.assertEqual(TwoFields.objects.count(), 3)
+        conflicting_object = TwoFields(f1=3, f2=3)
+        TwoFields.objects.bulk_create([conflicting_object], on_conflict='ignore')
+        self.assertEqual(TwoFields.objects.count(), 4)
 
         with self.assertRaises(IntegrityError):
             TwoFields.objects.bulk_create(data)
