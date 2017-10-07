@@ -2051,7 +2051,8 @@ On database backends that support it, the ``on_conflict`` parameter controls
 how the database handles conflicting data, i.e containing duplicate UNIQUE
 values. Currently this parameter can be ``None`` in which case an
 :exc:`~django.db.IntegrityError` will be thrown, or ``ignore`` in which case
-the database will ignore any failing rows.
+the database will ignore any failing rows. Using this parameter will disable
+setting the primary key attribute on backends that support it.
 
 .. versionchanged:: 2.1
 

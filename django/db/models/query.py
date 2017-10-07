@@ -468,7 +468,7 @@ class QuerySet:
             if objs_without_pk:
                 fields = [f for f in fields if not isinstance(f, AutoField)]
                 ids = self._batched_insert(objs_without_pk, fields, batch_size, on_conflict=on_conflict)
-                if connection.features.can_return_ids_from_bulk_insert:
+                if connection.features.can_return_ids_from_bulk_insert and not on_conflict == 'ignore':
                     assert len(ids) == len(objs_without_pk)
                 for obj_without_pk, pk in zip(objs_without_pk, ids):
                     obj_without_pk.pk = pk
@@ -1149,7 +1149,7 @@ class QuerySet:
         batch_size = (batch_size or max(ops.bulk_batch_size(fields, objs), 1))
         inserted_ids = []
         for item in [objs[i:i + batch_size] for i in range(0, len(objs), batch_size)]:
-            if connections[self.db].features.can_return_ids_from_bulk_insert:
+            if connections[self.db].features.can_return_ids_from_bulk_insert and not on_conflict == 'ignore':
                 inserted_id = self._insert(item, fields=fields, using=self.db, return_id=True, on_conflict=on_conflict)
                 if isinstance(inserted_id, list):
                     inserted_ids.extend(inserted_id)

@@ -277,12 +277,24 @@ class BulkCreateTests(TestCase):
         ]
         TwoFields.objects.bulk_create(data)
         self.assertEqual(TwoFields.objects.count(), 3)
-        conflicting_object = TwoFields(f1=3, f2=3)
-        TwoFields.objects.bulk_create([conflicting_object], on_conflict='ignore')
+
+        conflicting_objects = [
+            TwoFields(f1=2, f2=2),
+            TwoFields(f1=3, f2=3)
+        ]
+        TwoFields.objects.bulk_create([conflicting_objects[0]], on_conflict='ignore')
+        TwoFields.objects.bulk_create(conflicting_objects, on_conflict='ignore')
+        self.assertEqual(TwoFields.objects.count(), 3)
+        self.assertIsNone(conflicting_objects[0].pk)
+        self.assertIsNone(conflicting_objects[1].pk)
+
+        new_object = TwoFields(f1=4, f2=4)
+        TwoFields.objects.bulk_create(conflicting_objects + [new_object], on_conflict='ignore')
         self.assertEqual(TwoFields.objects.count(), 4)
+        self.assertIsNone(new_object.pk)
 
         with self.assertRaises(IntegrityError):
-            TwoFields.objects.bulk_create(data)
+            TwoFields.objects.bulk_create(conflicting_objects)
 
     def test_on_conflict_invalid(self):
         message = "'test' is an invalid value for on_conflict. Allowed values: 'ignore'"
