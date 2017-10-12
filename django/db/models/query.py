@@ -23,6 +23,7 @@ from django.db.models.fields import AutoField
 from django.db.models.functions import Trunc
 from django.db.models.query_utils import FilteredRelation, InvalidQuery, Q
 from django.db.models.sql.constants import CURSOR, GET_ITERATOR_CHUNK_SIZE
+from django.db.utils import NotSupportedError
 from django.utils import timezone
 from django.utils.deprecation import RemovedInDjango30Warning
 from django.utils.functional import cached_property, partition
@@ -1144,7 +1145,7 @@ class QuerySet:
         Helper method for bulk_create() to insert objs one batch at a time.
         """
         if on_conflict == 'ignore' and not connections[self.db].features.supports_on_conflict_ignore:
-            raise ValueError('This database backend does not support ON CONFLICT IGNORE')
+            raise NotSupportedError('This database backend does not support ON CONFLICT IGNORE')
         ops = connections[self.db].ops
         batch_size = (batch_size or max(ops.bulk_batch_size(fields, objs), 1))
         inserted_ids = []
